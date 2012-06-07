@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+</head>
+<body>
+
+Hello :-)
+<canvas id="myCanvas" width="200" height="100" style="border:1px solid #c3c3c3;">
+Your browser does not support the canvas element.
+</canvas>
+
+<script type="text/javascript">
+"use strict";
+$( function(){ 
+	var c=$("#myCanvas")[0];
+	var ctx=c.getContext("2d");
+	ctx.fillStyle="#FF0000";
+	ctx.fillRect(0,0,150,75);
+});
+
+</script>
+
+</body>
+</html>
