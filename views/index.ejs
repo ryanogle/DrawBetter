@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+<!--
+http://www.html5canvastutorials.com/tutorials/html5-canvas-arcs/
+http://www.williammalone.com/articles/create-html5-canvas-javascript-drawing-app/#demo-simple
+
+-->
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
@@ -8,18 +13,84 @@
 <body>
 
 Hello :-)
-<canvas id="myCanvas" width="200" height="100" style="border:1px solid #c3c3c3;">
+<canvas id="myCanvas" width="500" height="500" style="border:1px solid #c3c3c3;">
 Your browser does not support the canvas element.
 </canvas>
 
 <script type="text/javascript">
 "use strict";
+var canvas, context;
+
 $( function(){ 
-	var c=$("#myCanvas")[0];
-	var ctx=c.getContext("2d");
-	ctx.fillStyle="#FF0000";
-	ctx.fillRect(0,0,150,75);
+	canvas = $("#myCanvas")[0];
+	context = canvas.getContext("2d");
+	context.fillStyle="#FF0000";
+	context.fillRect(0,0,150,75);
 });
+
+$( function(){
+ "use strict";
+ var paint = false;
+ var clickX = [], clickY = [], clickDrag = [];
+ 
+ $('#myCanvas').mousedown(function(e){
+  var mouseX = e.pageX - this.offsetLeft;
+  var mouseY = e.pageY - this.offsetTop;
+		
+  paint = true;
+  addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+  redraw();
+});
+
+$("#myCanvas").mousemove(function(e){
+	if( paint ){
+		addClick( e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true );
+		redraw();
+	}
+});
+
+$("#myCanvas").mouseup(function(e){
+   paint = false;
+});
+
+$("#myCanvas").mouseleave(function(e){
+	paint = false;
+});
+
+function addClick(x, y, dragging){
+  clickX.push(x);
+  clickY.push(y);
+  clickDrag.push(dragging);
+}
+
+function redraw(){
+    var i, curx, cury;
+	canvas.width = canvas.width; // reset the Canvas
+	
+	  context.strokeStyle = "#df4b26";
+  	  context.lineJoin = "round";
+  	  context.lineWidth = 5;
+  	 
+  	 for ( i = 0; i < clickX.length; i++){
+  	    curx = clickX[i];
+  	    cury = clickY[i];
+  	 	context.beginPath();
+  	 	if( clickDrag[i] === true && i > 0 ){
+  	 		context.moveTo( clickX[i-1], clickY[i-1] );
+  	 	}else {
+  	 		context.moveTo( curx-1, cury );
+  	 	}
+  	 	context.lineTo( curx, cury );
+  	 	context.stroke();
+  	 }
+ 	
+ 	
+}
+
+
+});
+
+
 
 </script>
 
