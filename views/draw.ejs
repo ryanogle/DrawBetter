@@ -1,55 +1,140 @@
-<style type="text/css" media="screen">
-	#draw-wrapper {
-		width: 300px;
-		margin: auto;
-	}
-	#draw-area {
-		height: 400px;
-		background: #eee;
-		border: 2px inset #bbb;
-		clear: both;
-	}
-	#toolbar-area {
-		
-	}
-	.toolbar {
-		clear:left;
-	}
-	.toolbar .pallet {
-		width: 50px;
-		height: 50px;
-		border: 2px solid black;
-		float: left;
-	}
-	#color-selector #black {
-		background: black;
-	}
-	#color-selector #red {
-		background: red;
-	}
-	#color-selector #green {
-		background: green;
-	}
-	#color-selector #blue {
-		background: blue;
-	}
-</style>
-this is the area to test draw...
-<div id="draw-wrapper">
-	<div id="toolbar-area">
-		<div class="toolbar" id="color-selector">
-			<div class="pallet" id="black"></div>
-			<div class="pallet" id="red"></div>
-			<div class="pallet" id="green"></div>
-			<div class="pallet" id="blue"></div>
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--
+		http://www.html5canvastutorials.com/tutorials/html5-canvas-arcs/
+		http://www.williammalone.com/articles/create-html5-canvas-javascript-drawing-app/#demo-simple
+
+		-->
+		<style type="text/css" media="screen">
+			#draw-wrapper {
+				width: 300px;
+				margin: auto;
+			}
+			#draw-area {
+				width: 300px;
+				height: 400px;
+				background: #eee;
+				border: 2px inset #bbb;
+				clear: both;
+			}
+			#toolbar-area {
+			}
+			.toolbar {
+				clear: left;
+			}
+			.toolbar .pallet {
+				width: 50px;
+				height: 50px;
+				border: 2px solid black;
+				float: left;
+			}
+			#color-selector #black {
+				background: black;
+			}
+			#color-selector #red {
+				background: red;
+			}
+			#color-selector #green {
+				background: green;
+			}
+			#color-selector #blue {
+				background: blue;
+			}
+		</style>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				var canvas, context;
+				canvas = $("#draw-area");
+				context = canvas[0].getContext("2d");
+				var paint = false;
+				var clickX = [], clickY = [], clickDrag = [];
+
+				canvas.mousedown(function(e) {
+					var mouseX = e.pageX - this.offsetLeft;
+					var mouseY = e.pageY - this.offsetTop;
+						console.log([e.pageY,this.offsetTop,mouseY]);
+					paint = true;
+					addClick(mouseX, mouseY);
+					redraw();
+				});
+
+				canvas.mousemove(function(e) {
+					if(paint) {
+						var mouseX = e.pageX - this.offsetLeft;
+						var mouseY = e.pageY - this.offsetTop;
+						addClick(mouseX, mouseY, true);
+						redraw();
+					}
+				});
+
+				canvas.mouseup(function(e) {
+					paint = false;
+				});
+
+				canvas.mouseleave(function(e) {
+					paint = false;
+				});
+				function addClick(x, y, dragging) {
+					clickX.push(x);
+					clickY.push(y);
+					clickDrag.push(dragging);
+				}
+
+				function redraw() {
+					var i, curx, cury;
+					canvas[0].width = canvas[0].width;
+					// reset the Canvas
+
+					context.strokeStyle = "#df4b26";
+					context.lineJoin = "round";
+					context.lineWidth = 5;
+
+					for( i = 0; i < clickX.length; i++) {
+						curx = clickX[i];
+						cury = clickY[i];
+						context.beginPath();
+						if(clickDrag[i] === true && i > 0) {
+							context.moveTo(clickX[i - 1], clickY[i - 1]);
+						} else {
+							context.moveTo(curx - 1, cury-1);
+						}
+						context.lineTo(curx, cury);
+						context.stroke();
+					}
+
+				}
+
+			});
+
+		</script>
+	</head>
+	<body>
+		Drawing Canvas implimented in draw area
+		<div id="draw-wrapper">
+			<div id="toolbar-area">
+				<div class="toolbar" id="color-selector">
+					<div class="pallet" id="black"></div>
+					<div class="pallet" id="red"></div>
+					<div class="pallet" id="green"></div>
+					<div class="pallet" id="blue"></div>
+				</div>
+				<div class="toolbar" id="line-thickness">
+					<div class="pallet" id="thin">
+						Thin
+					</div>
+					<div class="pallet" id="normal">
+						Normal
+					</div>
+					<div class="pallet" id="thick">
+						Thick
+					</div>
+				</div>
+			</div>
+			<canvas id="draw-area">
+				this is where you would draw stuff
+			</canvas>
 		</div>
-		<div class="toolbar" id="line-thickness">
-			<div class="pallet" id="thin">Thin</div>
-			<div class="pallet" id="normal">Normal</div>
-			<div class="pallet" id="thick">Thick</div>
-		</div>
-	</div>
-	<div id="draw-area" style="background: #eee">
-		this is where you would draw stuff
-	</div>
-</div>
+	</body>
+</html>

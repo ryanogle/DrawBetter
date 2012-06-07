@@ -9,6 +9,9 @@ app.get('/', function(req, res){
 app.get('/login', function(req, res){
     res.render('login', {layout:false});
 });
+app.get('/draw', function(req, res){
+    res.render('draw', {layout:false});
+});
 
 app.get('/user/:id', function(req, res){
     res.send('user ' + req.params.id);
