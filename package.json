@@ -1,0 +1,17 @@
+{
+  "name" : "drawbetter",
+  "description" : "Draw Incredibly",
+  "author" : "anonymous",
+  "dependencies" : {
+    "express" : ">= 1.2.0",
+    "ejs" : ">=0.0.0",
+    "mongodb" : ">=0.0.0",
+    "mongoose" : ">=2.5.10",
+    "underscore" : "1.x.x",
+    "socket.io" : "0.9.x",
+    "bundle-up": ">=0.3.x"
+  },
+  "private": true,
+  "version" : "0.0.1"
+}
+
