@@ -12,8 +12,6 @@
 				margin: auto;
 			}
 			#draw-area {
-				width: 300px;
-				height: 400px;
 				background: #eee;
 				border: 2px inset #bbb;
 				clear: both;
@@ -54,7 +52,6 @@
 				canvas.mousedown(function(e) {
 					var mouseX = e.pageX - this.offsetLeft;
 					var mouseY = e.pageY - this.offsetTop;
-						console.log([e.pageY,this.offsetTop,mouseY]);
 					paint = true;
 					addClick(mouseX, mouseY);
 					redraw();
@@ -92,16 +89,47 @@
 					context.lineWidth = 5;
 
 					for( i = 0; i < clickX.length; i++) {
-						curx = clickX[i];
-						cury = clickY[i];
-						context.beginPath();
-						if(clickDrag[i] === true && i > 0) {
-							context.moveTo(clickX[i - 1], clickY[i - 1]);
-						} else {
-							context.moveTo(curx - 1, cury);
+						setTimeout(function() {
+								curx = clickX[i];
+								cury = clickY[i];
+								context.beginPath();
+								if(clickDrag[i] === true && i > 0) {
+									context.moveTo(clickX[i - 1], clickY[i - 1]);
+								} else {
+									context.moveTo(curx - context.lineWidth, cury);
+								}
+								context.lineTo(curx, cury);
+								context.stroke();
+							}, 1000);
+					}
+
+					// ANIMATION TEST
+					$("#animate").click(animate);
+
+					function animate() {
+						var i, curx, cury;
+						canvas[0].width = canvas[0].width;
+						// reset the Canvas
+
+						context.strokeStyle = "#df4b26";
+						context.lineJoin = "round";
+						context.lineWidth = 5;
+
+						for( i = 0; i < clickX.length; i++) {
+							setTimeout(function() {
+								curx = clickX[i];
+								cury = clickY[i];
+								context.beginPath();
+								if(clickDrag[i] === true && i > 0) {
+									context.moveTo(clickX[i - 1], clickY[i - 1]);
+								} else {
+									context.moveTo(curx - context.lineWidth, cury);
+								}
+								context.lineTo(curx, cury);
+								context.stroke();
+							}, 1000);
 						}
-						context.lineTo(curx, cury);
-						context.stroke();
+
 					}
 
 				}
@@ -132,9 +160,12 @@
 					</div>
 				</div>
 			</div>
-			<canvas id="draw-area">
+			<canvas id="draw-area" width="300" height="400">
 				this is where you would draw stuff
 			</canvas>
+			<button id="animate">
+				Animate!
+			</button>
 		</div>
 	</body>
 </html>
