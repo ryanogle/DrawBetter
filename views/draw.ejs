@@ -79,28 +79,18 @@
 					clickDrag.push(dragging);
 				}
 
+				
 				function redraw() {
-					var i, curx, cury;
-					canvas[0].width = canvas[0].width;
 					// reset the Canvas
-
-					context.strokeStyle = "#df4b26";
+					
+					// draw styles
+					context.strokeStyle = "red";
 					context.lineJoin = "round";
+					context.lineCap = "round";
 					context.lineWidth = 5;
-
-					for ( i = 0; i < clickX.length; i++) {
-						curx = clickX[i];
-						cury = clickY[i];
-						context.beginPath();
-						if (clickDrag[i] === true && i > 0) {
-							context.moveTo(clickX[i - 1], clickY[i - 1]);
-						} else {
-							context.moveTo(curx - context.lineWidth, cury);
-						}
-						context.lineTo(curx, cury);
-						context.stroke();
-
-					}
+					
+					// just render the last segment over the existing drawing
+					renderDrawing(0, clickX.length-1);
 				}
 
 				// ANIMATION TEST
@@ -114,15 +104,21 @@
 					// draw styles
 					context.strokeStyle = "blue";
 					context.lineJoin = "round";
+					context.lineCap = "round";
 					context.lineWidth = 5;
 					
-					renderDrawing(50);
+					// draw out the whole path
+					renderDrawing(0, 0);
 				}
 
-				// function to draw a path by recursively running through an array of points
-				// but begin and end path and other context stuff outside of this function
-				// start at end, recurse to beginning, then move forward
-				// first argument optional delay, second argument optional index
+				/**
+				 * recursive function to loop through array of points and draw each segment
+				 * option to use a delay to animate the drawing
+				 * needs context settings (styles, path, etc) set outside of it
+				 * 
+				 * @param {int} delay optional, defaults to 0
+				 * @param {int} index optional, defaults to 0
+				 */
 				function renderDrawing(delay, index) {
 					// set delay to 0 if not set
 					if (delay == undefined)
@@ -134,18 +130,19 @@
 					//-------------
 					// draw segment
 					//-------------
-					curx = clickX[index];
-					cury = clickY[index];
+					context.beginPath();
+
 					
 					if (clickDrag[index] === true && index > 0) {
 						// set context to previous point
 						context.moveTo(clickX[index-1], clickY[index-1]);
 					} else {
 						// set context to current point, but offset just enough to make a dot
-						context.moveTo(curx - context.lineWidth, cury);
+						context.moveTo(clickX[index] - 1, clickY[index]);
 					}
-					context.lineTo(curx, cury);
+					context.lineTo(clickX[index], clickY[index]);
 					context.stroke();
+					context.closePath();
 					
 					//------
 					// loop
@@ -162,7 +159,6 @@
 					}
 
 				}
-
 			});
 
 		</script>
