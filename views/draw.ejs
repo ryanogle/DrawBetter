@@ -58,7 +58,7 @@
 				});
 
 				canvas.mousemove(function(e) {
-					if(paint) {
+					if (paint) {
 						var mouseX = e.pageX - this.offsetLeft;
 						var mouseY = e.pageY - this.offsetTop;
 						addClick(mouseX, mouseY, true);
@@ -88,48 +88,77 @@
 					context.lineJoin = "round";
 					context.lineWidth = 5;
 
-					for( i = 0; i < clickX.length; i++) {
-						setTimeout(function() {
-								curx = clickX[i];
-								cury = clickY[i];
-								context.beginPath();
-								if(clickDrag[i] === true && i > 0) {
-									context.moveTo(clickX[i - 1], clickY[i - 1]);
-								} else {
-									context.moveTo(curx - context.lineWidth, cury);
-								}
-								context.lineTo(curx, cury);
-								context.stroke();
-							}, 1000);
-					}
-
-					// ANIMATION TEST
-					$("#animate").click(animate);
-
-					function animate() {
-						var i, curx, cury;
-						canvas[0].width = canvas[0].width;
-						// reset the Canvas
-
-						context.strokeStyle = "#df4b26";
-						context.lineJoin = "round";
-						context.lineWidth = 5;
-
-						for( i = 0; i < clickX.length; i++) {
-							setTimeout(function() {
-								curx = clickX[i];
-								cury = clickY[i];
-								context.beginPath();
-								if(clickDrag[i] === true && i > 0) {
-									context.moveTo(clickX[i - 1], clickY[i - 1]);
-								} else {
-									context.moveTo(curx - context.lineWidth, cury);
-								}
-								context.lineTo(curx, cury);
-								context.stroke();
-							}, 1000);
+					for ( i = 0; i < clickX.length; i++) {
+						curx = clickX[i];
+						cury = clickY[i];
+						context.beginPath();
+						if (clickDrag[i] === true && i > 0) {
+							context.moveTo(clickX[i - 1], clickY[i - 1]);
+						} else {
+							context.moveTo(curx - context.lineWidth, cury);
 						}
+						context.lineTo(curx, cury);
+						context.stroke();
 
+					}
+				}
+
+				// ANIMATION TEST
+				$("#animate").click(drawBack);
+				
+				// render drawing with delay for animation
+				function drawBack() {
+					// reset the Canvas
+					canvas[0].width = canvas[0].width;
+					
+					// draw styles
+					context.strokeStyle = "blue";
+					context.lineJoin = "round";
+					context.lineWidth = 5;
+					
+					renderDrawing(50);
+				}
+
+				// function to draw a path by recursively running through an array of points
+				// but begin and end path and other context stuff outside of this function
+				// start at end, recurse to beginning, then move forward
+				// first argument optional delay, second argument optional index
+				function renderDrawing(delay, index) {
+					// set delay to 0 if not set
+					if (delay == undefined)
+						var delay = 0;
+					// set index to first element if not set
+					if (index == undefined)
+						var index = 0;
+
+					//-------------
+					// draw segment
+					//-------------
+					curx = clickX[index];
+					cury = clickY[index];
+					
+					if (clickDrag[index] === true && index > 0) {
+						// set context to previous point
+						context.moveTo(clickX[index-1], clickY[index-1]);
+					} else {
+						// set context to current point, but offset just enough to make a dot
+						context.moveTo(curx - context.lineWidth, cury);
+					}
+					context.lineTo(curx, cury);
+					context.stroke();
+					
+					//------
+					// loop
+					//------
+					if (index >= clickX.length)
+						// return case - end of instructions, we're done here
+						return;
+					else {
+						// recurse case - run it again with the next point
+						index++;
+						setTimeout(function() {
+							renderDrawing(delay, index)
+						}, delay);
 					}
 
 				}
